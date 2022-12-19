@@ -1,0 +1,231 @@
+// DESIGN PATTERNS -- CREATIONAL PATTERNS
+
+// **************************** FACTORY METHOD **************************
+Factory = function () {
+    this.createEmployee = function (type) {
+        var employee;
+        if (type === "fulltime") {
+            employee = new fullTimeEmployee();
+        } else if (type === "parttime") {
+            employee = new partTimeEmployee();
+        } else if (type === "temporary") {
+            employee = new temporaryEmployee();
+        } else if (type === "contractor") {
+            employee = new contractorEmployee();
+        }
+        employee.type = type;
+        employee.say = function () {
+            console.log(this.type + ": rate " + this.hourly + "/hour");
+        }
+        return employee;
+    }
+}
+
+fullTimeEmployee = function () {
+    this.hourly = "12k";
+};
+
+partTimeEmployee = function () {
+    this.hourly = "11k";
+};
+
+temporaryEmployee = function () {
+    this.hourly = "10k";
+};
+
+contractorEmployee = function () {
+    this.hourly = "15k";
+};
+
+FactoryMethod = function () {
+    let employees = [];
+    let factory = new Factory();
+    
+    employees.push(factory.createEmployee("fulltime"));
+    employees.push(factory.createEmployee("parttime"));
+    employees.push(factory.createEmployee("temporary"));
+    employees.push(factory.createEmployee("contractor"));
+    
+    for (var i = 0, len = employees.length; i < len; i++) {
+        employees[i].say();
+    }
+    
+}
+
+// **************************** ABSTRACT FACTORY **************************
+function Employee(name) {
+    this.name = name;
+    this.say = function () {
+        console.log("I am employee " + name);
+    };
+}
+
+function EmployeeFactory() {
+    this.create = function (name) {
+        return new Employee(name);
+    };
+}
+
+function Vendor(name) {
+    this.name = name;
+    this.say = function () {
+        console.log("I am vendor " + name);
+    };
+}
+
+function VendorFactory() {
+    this.create = function (name) {
+        return new Vendor(name);
+    };
+}
+
+function AbstractFactory() {
+    var persons = [];
+    var employeeFactory = new EmployeeFactory();
+    var vendorFactory = new VendorFactory();
+
+    persons.push(employeeFactory.create("Asad"));
+    persons.push(employeeFactory.create("Mahin"));
+    persons.push(vendorFactory.create("Basit"));
+
+    for (var i = 0, len = persons.length; i < len; i++) {
+        persons[i].say();
+    }
+}
+
+// **************************** SINGLETON **************************
+var singleton = new (function () {
+  var private = "Test value";
+  this.print = function() {
+      console.log(private);
+  }
+})();
+
+function Singleton() {
+    singleton.print();
+}
+
+// **************************** BUILDER PATTERN **************************
+function Shop() {
+    this.construct = function (builder) {
+        builder.step1();
+        builder.step2();
+        return builder.get();
+    }
+}
+
+function CarBuilder() {
+    this.car = null;
+
+    this.step1 = function () {
+        this.car = new Car();
+    };
+
+    this.step2 = function () {
+        this.car.addParts();
+    };
+
+    this.get = function () {
+        return this.car;
+    };
+}
+
+function TruckBuilder() {
+    this.truck = null;
+
+    this.step1 = function () {
+        this.truck = new Truck();
+    };
+
+    this.step2 = function () {
+        this.truck.addParts();
+    };
+
+    this.get = function () {
+        return this.truck;
+    };
+}
+
+function Car() {
+    this.doors = 0;
+
+    this.addParts = function () {
+        this.doors = 4;
+    };
+
+    this.say = function () {
+        console.log("I am a " + this.doors + "-door car");
+    };
+}
+
+function Truck() {
+    this.doors = 0;
+
+    this.addParts = function () {
+        this.doors = 2;
+    };
+
+    this.say = function () {
+        console.log("I am a " + this.doors + "-door truck");
+    };
+}
+
+function BuilderPattern() {
+    var shop = new Shop();
+    var carBuilder = new CarBuilder();
+    var truckBuilder = new TruckBuilder();
+    var car = shop.construct(carBuilder);
+    var truck = shop.construct(truckBuilder);
+
+    car.say();
+    truck.say();
+}
+
+
+// **************************** PROTOTYPE PATTERN **************************
+function CustomerPrototype(proto) {
+    this.proto = proto;
+
+    this.clone = function () {
+        var customer = new Customer();
+
+        customer.first = proto.first;
+        customer.last = proto.last;
+        customer.status = proto.status;
+
+        return customer;
+    };
+}
+
+function Customer(first, last, status) {
+
+    this.first = first;
+    this.last = last;
+    this.status = status;
+
+    this.say = function () {
+        console.log("name: " + this.first + " " + this.last +
+            ", status: " + this.status);
+    };
+}
+
+function PrototypePattern() {
+
+    var proto = new Customer("Basit", "Irfan", "pending");
+    var prototype = new CustomerPrototype(proto);
+
+    var customer = prototype.clone();
+    customer.say();
+}
+
+
+
+
+
+
+//**************** MAIN ****************
+// FactoryMethod();
+// AbstractFactory();
+// Singleton();
+// BuilderPattern();
+PrototypePattern();
